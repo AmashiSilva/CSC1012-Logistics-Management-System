@@ -55,6 +55,8 @@ void input_distance();
 void display_distance_table();
 float dijkstra_shortest_path(int source, int destination, int* path, int* path_length);
 void process_delivery();
+void generate_reports();
+void display_summary_report();
 
 int main()
 {
@@ -75,7 +77,7 @@ int main()
                 process_delivery();  // Process a new delivery request
                 break;
             case 4:
-                //To be implemented
+                generate_reports();
                 break;
             case 5:
                 //To be implemented
@@ -526,4 +528,83 @@ void process_delivery() {
     printf("Customer Charge: %.2f LKR\n", customer_charge);
     printf("Estimated Time: %.2f hours\n", estimated_time);
     printf("==============================================================\n");
+}
+
+void generate_reports() {
+    if(delivery_count == 0) {
+        printf("No delivery records available!\n");
+        return;
+    }
+
+    int report_choice;
+    do {
+        printf("\n--- Performance Reports ---\n");
+        printf("1. Summary Report\n");
+        printf("2. Delivery History\n");
+        printf("3. Vehicle Performance\n");
+        printf("0. Back to Main Menu\n");
+
+        report_choice = get_valid_int_input("Select report type: ", 0, 3);
+
+        switch(report_choice) {
+            case 1:
+                display_summary_report();
+                break;
+            case 2:
+                //To be implemented
+                break;
+            case 3:
+                //To be implemented
+                break;
+            case 0:
+                break;
+            default:
+                printf("Invalid choice!\n");
+        }
+    } while(report_choice != 0);
+}
+
+void display_summary_report() {
+    printf("\n========================================\n");
+    printf("        PERFORMANCE SUMMARY REPORT\n");
+    printf("========================================\n");
+
+    float total_distance = 0;
+    float total_time = 0;
+    float total_revenue = 0;
+    float total_profit = 0;
+    float longest_route = 0;
+    float shortest_route = FLT_MAX;
+
+    for(int i = 0; i < delivery_count; i++) {
+        total_distance += delivery_distances[i];
+        total_time += delivery_estimated_times[i];
+        total_revenue += delivery_customer_charges[i];
+        total_profit += delivery_profits[i];
+
+        if(delivery_distances[i] > longest_route)
+            longest_route = delivery_distances[i];
+        if(delivery_distances[i] < shortest_route)
+            shortest_route = delivery_distances[i];
+    }
+
+    float average_delivery_time = total_time / delivery_count;
+
+    // Display all required metrics
+    printf("a. Total Deliveries Completed: %d\n", delivery_count);
+    printf("b. Total Distance Covered: %.2f km\n", total_distance);
+    printf("c. Average Delivery Time: %.2f hours\n", average_delivery_time);
+    printf("d. Total Revenue: LKR %.2f\n", total_revenue);
+    printf("   Total Profit: LKR %.2f\n", total_profit);
+    printf("e. Longest Route Completed: %.2f km\n", longest_route);
+    printf("   Shortest Route Completed: %.2f km\n",
+           (shortest_route == FLT_MAX) ? 0 : shortest_route);
+
+    // Additional useful metrics
+    printf("\nAdditional Metrics:\n");
+    printf(" Average Distance per Delivery: %.2f km\n", total_distance / delivery_count);
+    printf(" Average Revenue per Delivery: LKR %.2f\n", total_revenue / delivery_count);
+    printf(" Total Fuel Cost: LKR %.2f\n", total_revenue - total_profit - (total_revenue * 0.8));
+
+    printf("========================================\n");
 }
