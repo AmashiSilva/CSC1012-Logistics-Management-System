@@ -21,6 +21,8 @@ int find_city_index(char* city_name);
 void city_management();
 void add_city();
 void display_cities();
+void rename_city();
+void remove_city();
 
 int main()
 {
@@ -133,10 +135,10 @@ void city_management() {
                 add_city();
                 break;
             case 2:
-                //To be implemented
+                rename_city();
                 break;
             case 3:
-                //To be implemented
+                remove_city();
                 break;
             case 4:
                 display_cities();
@@ -179,5 +181,54 @@ void display_cities() {
 
     for(int i = 0; i < city_count; i++) {
         printf("%d. %s\n", i + 1, cities[i]);
+    }
+}
+
+void rename_city() {
+    if(city_count == 0) {
+        printf("No cities available!\n");
+        return;
+    }
+
+    display_cities();
+    int index = get_valid_int_input("Enter city number to rename: ", 1, city_count) - 1;
+
+    char new_name[MAX_NAME_LENGTH];
+    printf("Enter new name for %s: ", cities[index]);
+    scanf("%49s", new_name);
+    clear_input_buffer();
+
+    if(find_city_index(new_name) != -1) {
+        printf("City '%s' already exists!\n", new_name);
+        return;
+    }
+
+    printf("City '%s' renamed to '%s'\n", cities[index], new_name);
+    strcpy(cities[index], new_name);
+}
+
+void remove_city() {
+    if(city_count == 0) {
+        printf("No cities available!\n");
+        return;
+    }
+
+    display_cities();
+    int index = get_valid_int_input("Enter city number to remove: ", 1, city_count) - 1;
+
+    printf("Are you sure you want to remove '%s'? (1=Yes, 0=No): ", cities[index]);
+    int confirm = get_valid_int_input("", 0, 1);
+
+    if(confirm) {
+        // Shift array to remove city
+        char removed_city[MAX_NAME_LENGTH];
+        strcpy(removed_city, cities[index]);
+
+        for(int i = index; i < city_count - 1; i++) {
+            strcpy(cities[i], cities[i + 1]);
+        }
+        city_count--;
+
+        printf("City '%s' removed successfully!\n", removed_city);
     }
 }
