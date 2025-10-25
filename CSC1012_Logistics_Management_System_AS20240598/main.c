@@ -57,6 +57,8 @@ float dijkstra_shortest_path(int source, int destination, int* path, int* path_l
 void process_delivery();
 void generate_reports();
 void display_summary_report();
+void display_delivery_history();
+void display_vehicle_performance();
 
 int main()
 {
@@ -77,7 +79,7 @@ int main()
                 process_delivery();  // Process a new delivery request
                 break;
             case 4:
-                generate_reports();
+                generate_reports();  // Generate various performance reports
                 break;
             case 5:
                 //To be implemented
@@ -548,13 +550,13 @@ void generate_reports() {
 
         switch(report_choice) {
             case 1:
-                display_summary_report();
+                display_summary_report();  // Overall system performance summary
                 break;
             case 2:
-                //To be implemented
+                display_delivery_history();  // Detailed history of all deliveries
                 break;
             case 3:
-                //To be implemented
+                display_vehicle_performance();  // Performance breakdown by vehicle type
                 break;
             case 0:
                 break;
@@ -564,6 +566,7 @@ void generate_reports() {
     } while(report_choice != 0);
 }
 
+// Display summary report with key performance metrics
 void display_summary_report() {
     printf("\n========================================\n");
     printf("        PERFORMANCE SUMMARY REPORT\n");
@@ -605,6 +608,70 @@ void display_summary_report() {
     printf(" Average Distance per Delivery: %.2f km\n", total_distance / delivery_count);
     printf(" Average Revenue per Delivery: LKR %.2f\n", total_revenue / delivery_count);
     printf(" Total Fuel Cost: LKR %.2f\n", total_revenue - total_profit - (total_revenue * 0.8));
+
+    printf("========================================\n");
+}
+
+// Display detailed history of all deliveries
+void display_delivery_history() {
+    printf("\n========================================\n");
+    printf("        DELIVERY HISTORY\n");
+    printf("========================================\n");
+
+    // Display each delivery record
+    for(int i = 0; i < delivery_count; i++) {
+        printf("Delivery ID: %d\n", delivery_ids[i]);
+        printf("  Route: %s to %s\n", delivery_sources[i], delivery_destinations[i]);
+        printf("  Distance: %.2f km | Time: %.2f hours\n", delivery_distances[i], delivery_estimated_times[i]);
+        printf("  Vehicle: %s | Weight: %.2f kg\n", delivery_vehicles[i], delivery_weights[i]);
+        printf("  Customer Charge: LKR %.2f | Profit: LKR %.2f\n",
+               delivery_customer_charges[i], delivery_profits[i]);
+        printf("  ----------------------------------------\n");
+    }
+
+    printf("Total Records: %d deliveries\n", delivery_count);
+    printf("========================================\n");
+}
+
+// Display performance breakdown by vehicle type
+void display_vehicle_performance() {
+    printf("\n========================================\n");
+    printf("        VEHICLE PERFORMANCE REPORT\n");
+    printf("========================================\n");
+
+    // Arrays to store vehicle-specific statistics
+    int vehicle_deliveries[3] = {0};      // Count of deliveries per vehicle type
+    float vehicle_distance[3] = {0};      // Total distance per vehicle type
+    float vehicle_revenue[3] = {0};       // Total revenue per vehicle type
+    float vehicle_profit[3] = {0};        // Total profit per vehicle type
+
+    // Calculate statistics for each vehicle type
+    for(int i = 0; i < delivery_count; i++) {
+        int vehicle_index = -1;
+        // Determine vehicle type index
+        if(strcmp(delivery_vehicles[i], "Van") == 0) vehicle_index = 0;
+        else if(strcmp(delivery_vehicles[i], "Truck") == 0) vehicle_index = 1;
+        else if(strcmp(delivery_vehicles[i], "Lorry") == 0) vehicle_index = 2;
+
+        if(vehicle_index != -1) {
+            vehicle_deliveries[vehicle_index]++;
+            vehicle_distance[vehicle_index] += delivery_distances[i];
+            vehicle_revenue[vehicle_index] += delivery_customer_charges[i];
+            vehicle_profit[vehicle_index] += delivery_profits[i];
+        }
+    }
+
+    // Display performance for each vehicle type
+    for(int i = 0; i < 3; i++) {
+        printf("\n%s Performance:\n", vehicle_types[i]);
+        printf(" Deliveries: %d\n", vehicle_deliveries[i]);
+        printf(" Total Distance: %.2f km\n", vehicle_distance[i]);
+        printf(" Total Revenue: LKR %.2f\n", vehicle_revenue[i]);
+        printf(" Total Profit: LKR %.2f\n", vehicle_profit[i]);
+        if(vehicle_deliveries[i] > 0) {
+            printf(" Average per Delivery: LKR %.2f\n", vehicle_revenue[i] / vehicle_deliveries[i]);
+        }
+    }
 
     printf("========================================\n");
 }
