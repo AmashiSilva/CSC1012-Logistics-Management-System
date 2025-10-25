@@ -504,4 +504,26 @@ void process_delivery() {
     delivery_estimated_times[current_index] = estimated_time;
 
     delivery_count++;
+
+    // Display delivery summary
+    printf("\n");
+    printf("==============================================================\n");
+    printf("DELIVERY COST ESTIMATION\n");
+    printf("==============================================================\n");
+    printf("From: %s\n", cities[source]);
+    printf("To: %s\n", cities[destination]);
+    printf("Minimum Distance: %.0f km\n", min_distance);
+    printf("Vehicle: %s\n", vehicle_types[vehicle_choice]);
+    printf("Weight: %.0f kg\n", weight);
+    printf("==============================================================\n");
+    printf("Base Cost: %.0f x %.0f x (1 + %.0f/10000) = %s%.2f LKR\n",
+           min_distance, vehicle_rates[vehicle_choice], weight,
+           base_cost >= 10000 ? "" : "", base_cost);
+    printf("Fuel Used: %.2f L\n", fuel_used);
+    printf("Fuel Cost: %.2f LKR\n", fuel_cost);
+    printf("Operational Cost: %.2f LKR\n", operational_cost);
+    printf("Profit: %.2f LKR\n", profit);
+    printf("Customer Charge: %.2f LKR\n", customer_charge);
+    printf("Estimated Time: %.2f hours\n", estimated_time);
+    printf("==============================================================\n");
 }
