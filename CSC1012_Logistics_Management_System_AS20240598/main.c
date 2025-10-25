@@ -8,6 +8,7 @@
 #define MAX_CITIES 30
 #define MAX_DELIVERIES 50
 #define MAX_NAME_LENGTH 50
+#define FUEL_PRICE 310.0
 
 // Global arrays for system data
 char cities[MAX_CITIES][MAX_NAME_LENGTH];  //Array to store city names
@@ -22,6 +23,13 @@ float delivery_weights[MAX_DELIVERIES];
 char delivery_vehicles[MAX_DELIVERIES][10];
 float delivery_distances[MAX_DELIVERIES];
 int delivery_count = 0;
+float delivery_base_costs[MAX_DELIVERIES];
+float delivery_fuel_used[MAX_DELIVERIES];
+float delivery_fuel_costs[MAX_DELIVERIES];
+float delivery_operational_costs[MAX_DELIVERIES];
+float delivery_profits[MAX_DELIVERIES];
+float delivery_customer_charges[MAX_DELIVERIES];
+float delivery_estimated_times[MAX_DELIVERIES];
 
 // Vehicle data stored in parallel arrays
 char vehicle_types[3][10] = {"Van", "Truck", "Lorry"};
@@ -470,4 +478,12 @@ void process_delivery() {
     int vehicle_choice = get_valid_int_input("Select vehicle (1-3): ", 1, 3) - 1;
     float weight = get_valid_float_input("Enter package weight (kg): ", 0.1, vehicle_capacities[vehicle_choice]);
 
+    // Calculations
+    float base_cost = min_distance * vehicle_rates[vehicle_choice] * (1 + weight / 10000.0);
+    float fuel_used = min_distance / vehicle_efficiencies[vehicle_choice];
+    float fuel_cost = fuel_used * FUEL_PRICE;
+    float operational_cost = base_cost + fuel_cost;
+    float profit = base_cost * 0.25;
+    float customer_charge = operational_cost + profit;
+    float estimated_time = min_distance / vehicle_speeds[vehicle_choice];
 }
