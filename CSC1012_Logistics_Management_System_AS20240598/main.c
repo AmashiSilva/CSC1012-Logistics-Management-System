@@ -59,6 +59,7 @@ void generate_reports();
 void display_summary_report();
 void display_delivery_history();
 void display_vehicle_performance();
+void save_data();
 
 int main()
 {
@@ -82,10 +83,10 @@ int main()
                 generate_reports();  // Generate various performance reports
                 break;
             case 5:
-                //To be implemented
+                save_data();  // Save all data to files
                 break;
             case 0:
-                //To be implemented
+                save_data();  // Save data before exiting
                 printf("Thank you for using Logistics Management System!\n");
                 break;
             default:
@@ -674,4 +675,41 @@ void display_vehicle_performance() {
     }
 
     printf("========================================\n");
+}
+
+// Save all system data to files for persistence
+void save_data() {
+    // Save cities and distances to routes.txt
+    FILE* routes_file = fopen("routes.txt", "w");
+    if(routes_file) {
+        fprintf(routes_file, "%d\n", city_count);  // Save number of cities
+        for(int i = 0; i < city_count; i++) {
+            fprintf(routes_file, "%s\n", cities[i]);  // Save city names
+        }
+
+        // Save distance matrix
+        for(int i = 0; i < city_count; i++) {
+            for(int j = 0; j < city_count; j++) {
+                fprintf(routes_file, "%.2f ", distance[i][j]);
+            }
+            fprintf(routes_file, "\n");
+        }
+        fclose(routes_file);
+    }
+
+    // Save delivery records to deliveries.txt
+    FILE* deliveries_file = fopen("deliveries.txt", "w");
+    if(deliveries_file) {
+        fprintf(deliveries_file, "%d\n", delivery_count);  // Save number of deliveries
+        for(int i = 0; i < delivery_count; i++) {
+            // Save all delivery data in CSV format
+            fprintf(deliveries_file, "%d,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n",
+                   delivery_ids[i], delivery_sources[i], delivery_destinations[i],
+                   delivery_weights[i], delivery_vehicles[i], delivery_distances[i],
+                   delivery_base_costs[i], delivery_fuel_used[i], delivery_fuel_costs[i],
+                   delivery_operational_costs[i], delivery_profits[i],
+                   delivery_customer_charges[i], delivery_estimated_times[i]);
+        }
+        fclose(deliveries_file);
+    }
 }
