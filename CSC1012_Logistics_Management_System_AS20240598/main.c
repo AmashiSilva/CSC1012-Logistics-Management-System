@@ -17,6 +17,10 @@ void initialize_system();
 void display_main_menu();
 int get_valid_int_input(char* prompt, int min, int max);
 void clear_input_buffer();
+int find_city_index(char* city_name);
+void city_management();
+void add_city();
+void display_cities();
 
 int main()
 {
@@ -28,7 +32,7 @@ int main()
 
         switch(choice) {
             case 1:
-                //To be implemented
+                city_management();
                 break;
             case 2:
                 //To be implemented
@@ -103,3 +107,77 @@ void clear_input_buffer() {
     while((c = getchar()) != '\n' && c != EOF);
 }
 
+int find_city_index(char* city_name) {
+    for(int i = 0; i < city_count; i++) {
+        if(strcmp(cities[i], city_name) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void city_management() {
+    int choice;
+    do {
+        printf("\n--- City Management ---\n");
+        printf("1. Add City\n");
+        printf("2. Rename City\n");
+        printf("3. Remove City\n");
+        printf("4. Display Cities\n");
+        printf("0. Back to Main Menu\n");
+
+        choice = get_valid_int_input("Enter your choice: ", 0, 4);
+
+        switch(choice) {
+            case 1:
+                add_city();
+                break;
+            case 2:
+                //To be implemented
+                break;
+            case 3:
+                //To be implemented
+                break;
+            case 4:
+                display_cities();
+                break;
+            case 0:
+                break;
+            default:
+                printf("Invalid choice!\n");
+        }
+    } while(choice != 0);
+}
+
+void add_city() {
+    if(city_count >= MAX_CITIES) {
+        printf("Maximum number of cities (%d) reached!\n", MAX_CITIES);
+        return;
+    }
+
+    char city_name[MAX_NAME_LENGTH];
+    printf("Enter city name: ");
+    scanf("%49s", city_name);
+    clear_input_buffer();
+
+    if(find_city_index(city_name) != -1) {
+        printf("City '%s' already exists!\n", city_name);
+        return;
+    }
+
+    strcpy(cities[city_count], city_name);
+    city_count++;
+    printf("City '%s' added successfully!\n", city_name);
+}
+
+void display_cities() {
+    printf("\n--- Available Cities ---\n");
+    if(city_count == 0) {
+        printf("No cities available.\n");
+        return;
+    }
+
+    for(int i = 0; i < city_count; i++) {
+        printf("%d. %s\n", i + 1, cities[i]);
+    }
+}
