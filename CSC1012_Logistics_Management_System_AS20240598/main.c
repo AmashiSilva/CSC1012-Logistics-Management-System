@@ -12,6 +12,13 @@ char cities[MAX_CITIES][MAX_NAME_LENGTH];
 float distance[MAX_CITIES][MAX_CITIES];
 int city_count = 0;
 
+// Vehicle data stored in parallel arrays
+char vehicle_types[3][10] = {"Van", "Truck", "Lorry"};
+int vehicle_capacities[3] = {1000, 5000, 10000};
+float vehicle_rates[3] = {30.0, 40.0, 80.0};
+float vehicle_speeds[3] = {60.0, 50.0, 45.0};
+float vehicle_efficiencies[3] = {12.0, 6.0, 4.0};
+
 // Function prototypes
 void initialize_system();
 void display_main_menu();
