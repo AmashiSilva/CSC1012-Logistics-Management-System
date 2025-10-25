@@ -26,6 +26,7 @@ void rename_city();
 void remove_city();
 void distance_management();
 void input_distance();
+void display_distance_table();
 
 int main()
 {
@@ -91,7 +92,7 @@ void display_main_menu() {
     printf("========================================\n");
 }
 
-// Input validation functions
+// Input validation function
 int get_valid_int_input(char* prompt, int min, int max) {
     int value;
     while(1) {
@@ -251,7 +252,7 @@ void distance_management() {
                 input_distance();
                 break;
             case 2:
-                //To be implemented
+                display_distance_table();
                 break;
             case 0:
                 break;
@@ -261,6 +262,7 @@ void distance_management() {
     } while(choice != 0);
 }
 
+// Input float validation function
 float get_valid_float_input(char* prompt, float min, float max) {
     float value;
     while(1) {
@@ -296,4 +298,32 @@ void input_distance() {
     distance[city1][city2] = dist;
     distance[city2][city1] = dist;  // Symmetrical
     printf("Distance between %s and %s set to %.2f km\n", cities[city1], cities[city2], dist);
+}
+
+void display_distance_table() {
+    if(city_count == 0) {
+        printf("No cities available!\n");
+        return;
+    }
+
+    printf("\n--- Distance Table (km) ---\n");
+
+    // Header row
+    printf("%-15s", "");
+    for(int i = 0; i < city_count; i++) {
+        printf("%-15s", cities[i]);
+    }
+    printf("\n");
+
+    // Data rows
+    for(int i = 0; i < city_count; i++) {
+        printf("%-15s", cities[i]);
+        for(int j = 0; j < city_count; j++) {
+            if(distance[i][j] == -1)
+                printf("%-15s", "N/A");
+            else
+                printf("%-15.2f", distance[i][j]);
+        }
+        printf("\n");
+    }
 }
