@@ -60,10 +60,14 @@ void display_summary_report();
 void display_delivery_history();
 void display_vehicle_performance();
 void save_data();
+void load_data();
 
 int main()
 {
+    // Initialize system data structures and load saved data
     initialize_system();
+    load_data();
+
     int choice;
     do {
         display_main_menu();
@@ -711,5 +715,43 @@ void save_data() {
                    delivery_customer_charges[i], delivery_estimated_times[i]);
         }
         fclose(deliveries_file);
+    }
+}
+
+// Load saved data from files when program starts
+void load_data() {
+    // Load cities and distances from routes.txt
+    FILE* routes_file = fopen("routes.txt", "r");
+    if(routes_file) {
+        fscanf(routes_file, "%d", &city_count);  // Read number of cities
+        for(int i = 0; i < city_count; i++) {
+            fscanf(routes_file, "%s", cities[i]);  // Read city names
+        }
+
+        // Read distance matrix
+        for(int i = 0; i < city_count; i++) {
+            for(int j = 0; j < city_count; j++) {
+                fscanf(routes_file, "%f", &distance[i][j]);
+            }
+        }
+        fclose(routes_file);
+        printf("Routes data loaded successfully!\n");
+    }
+
+    // Load delivery records from deliveries.txt
+    FILE* deliveries_file = fopen("deliveries.txt", "r");
+    if(deliveries_file) {
+        fscanf(deliveries_file, "%d", &delivery_count);  // Read number of deliveries
+        for(int i = 0; i < delivery_count; i++) {
+            // Read all delivery data in CSV format
+            fscanf(deliveries_file, "%d,%[^,],%[^,],%f,%[^,],%f,%f,%f,%f,%f,%f,%f,%f",
+                   &delivery_ids[i], delivery_sources[i], delivery_destinations[i],
+                   &delivery_weights[i], delivery_vehicles[i], &delivery_distances[i],
+                   &delivery_base_costs[i], &delivery_fuel_used[i], &delivery_fuel_costs[i],
+                   &delivery_operational_costs[i], &delivery_profits[i],
+                   &delivery_customer_charges[i], &delivery_estimated_times[i]);
+        }
+        fclose(deliveries_file);
+        printf("Delivery records loaded successfully!\n");
     }
 }
