@@ -46,7 +46,7 @@ void distance_management();
 void input_distance();
 void display_distance_table();
 float dijkstra_shortest_path(int source, int destination, int* path, int* path_length);
-//void process_delivery();
+void process_delivery();
 
 int main()
 {
@@ -64,7 +64,7 @@ int main()
                 distance_management();  // Manage distances between cities
                 break;
             case 3:
-                //process_delivery();  // Process a new delivery request
+                process_delivery();  // Process a new delivery request
                 break;
             case 4:
                 //To be implemented
@@ -417,4 +417,47 @@ float dijkstra_shortest_path(int source, int destination, int* path, int* path_l
     }
 
     return dist[destination];  // Return the shortest distance
+}
+
+// Process a new delivery request
+void process_delivery() {
+    if(city_count < 2) {
+        printf("Need at least 2 cities to process delivery!\n");
+        return;
+    }
+
+    if(delivery_count >= MAX_DELIVERIES) {
+        printf("Maximum delivery records (%d) reached!\n", MAX_DELIVERIES);
+        return;
+    }
+
+    printf("\n--- Process Delivery ---\n");
+    display_cities();
+
+    // Get route information
+    int source = get_valid_int_input("Enter source city number: ", 1, city_count) - 1;
+    int destination = get_valid_int_input("Enter destination city number: ", 1, city_count) - 1;
+
+    if(source == destination) {
+        printf("Source and destination cannot be the same!\n");
+        return;
+    }
+
+    // Find shortest path using Dijkstra's algorithm
+    int path[MAX_CITIES];
+    int path_length;
+    float min_distance = dijkstra_shortest_path(source, destination, path, &path_length);
+
+    if(min_distance == FLT_MAX) {
+        printf("No route found between %s and %s!\n", cities[source], cities[destination]);
+        return;
+    }
+
+    // Display route
+    printf("\nShortest route: ");
+    for(int i = 0; i < path_length; i++) {
+        printf("%s", cities[path[i]]);
+        if(i < path_length - 1) printf(" -> ");
+    }
+    printf(" (%.2f km)\n", min_distance);
 }
