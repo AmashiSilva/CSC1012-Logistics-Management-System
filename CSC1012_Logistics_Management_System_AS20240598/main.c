@@ -16,6 +16,7 @@ int city_count = 0;
 void initialize_system();
 void display_main_menu();
 int get_valid_int_input(char* prompt, int min, int max);
+float get_valid_float_input(char* prompt, float min, float max);
 void clear_input_buffer();
 int find_city_index(char* city_name);
 void city_management();
@@ -23,6 +24,8 @@ void add_city();
 void display_cities();
 void rename_city();
 void remove_city();
+void distance_management();
+void input_distance();
 
 int main()
 {
@@ -37,7 +40,7 @@ int main()
                 city_management();
                 break;
             case 2:
-                //To be implemented
+                distance_management();
                 break;
             case 3:
                 //To be implemented
@@ -231,4 +234,66 @@ void remove_city() {
 
         printf("City '%s' removed successfully!\n", removed_city);
     }
+}
+
+void distance_management() {
+    int choice;
+    do {
+        printf("\n--- Distance Management ---\n");
+        printf("1. Input/Edit Distance\n");
+        printf("2. Display Distance Table\n");
+        printf("0. Back to Main Menu\n");
+
+        choice = get_valid_int_input("Enter your choice: ", 0, 2);
+
+        switch(choice) {
+            case 1:
+                input_distance();
+                break;
+            case 2:
+                //To be implemented
+                break;
+            case 0:
+                break;
+            default:
+                printf("Invalid choice!\n");
+        }
+    } while(choice != 0);
+}
+
+float get_valid_float_input(char* prompt, float min, float max) {
+    float value;
+    while(1) {
+        printf("%s", prompt);
+        if(scanf("%f", &value) == 1) {
+            if(value >= min && value <= max) {
+                clear_input_buffer();
+                return value;
+            }
+        }
+        printf("Invalid input! Please enter a number between %.2f and %.2f.\n", min, max);
+        clear_input_buffer();
+    }
+}
+
+void input_distance() {
+    if(city_count < 2) {
+        printf("Need at least 2 cities to input distances!\n");
+        return;
+    }
+
+    display_cities();
+    int city1 = get_valid_int_input("Enter first city number: ", 1, city_count) - 1;
+    int city2 = get_valid_int_input("Enter second city number: ", 1, city_count) - 1;
+
+    if(city1 == city2) {
+        printf("Distance between same city is always 0.\n");
+        return;
+    }
+
+    float dist = get_valid_float_input("Enter distance (km): ", 0.1, 10000.0);
+
+    distance[city1][city2] = dist;
+    distance[city2][city1] = dist;  // Symmetrical
+    printf("Distance between %s and %s set to %.2f km\n", cities[city1], cities[city2], dist);
 }
