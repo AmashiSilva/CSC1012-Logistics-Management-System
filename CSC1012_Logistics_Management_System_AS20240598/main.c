@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
+#include <float.h>
 
 //Constants and global variables
 #define MAX_CITIES 30
@@ -34,6 +36,7 @@ void remove_city();
 void distance_management();
 void input_distance();
 void display_distance_table();
+float dijkstra_shortest_path(int source, int destination, int* path, int* path_length);
 
 int main()
 {
@@ -83,7 +86,7 @@ void initialize_system() {
     }
 
     //...
-    printf("System initialized successfully!\n");
+    //printf("System initialized successfully!\n");
 }
 
 // Display the main menu of the logistics management system
@@ -346,4 +349,60 @@ void display_distance_table() {
         }
         printf("\n");
     }
+}
+
+// Dijkstra's algorithm to find shortest path between two cities
+float dijkstra_shortest_path(int source, int destination, int* path, int* path_length) {
+    float dist[MAX_CITIES];  // Array to store shortest distances from source
+    int visited[MAX_CITIES] = {0};  // Array to track visited cities
+    int previous[MAX_CITIES];  // Array to store previous city in shortest path
+
+    for(int i = 0; i < MAX_CITIES; i++) {
+        dist[i] = FLT_MAX;  // FLT_MAX represents infinity
+        previous[i] = -1;  // -1 represents no previous city
+    }
+    dist[source] = 0;  // Distance from source to itself is 0
+
+    // Process all cities
+    for(int count = 0; count < city_count; count++) {
+        // Find the unvisited city with minimum distance
+        int min_index = -1;
+        float min_dist = FLT_MAX;
+        for(int v = 0; v < city_count; v++) {
+            if(!visited[v] && dist[v] < min_dist) {
+                min_dist = dist[v];
+                min_index = v;
+            }
+        }
+
+        if(min_index == -1) break;  // No more reachable cities
+        visited[min_index] = 1;  // Mark city as visited
+
+        // Update distances of adjacent cities
+        for(int v = 0; v < city_count; v++) {
+            if(!visited[v] && distance[min_index][v] > 0 &&           // If connected and unvisited
+               dist[min_index] != FLT_MAX &&                          // If current city is reachable
+               dist[min_index] + distance[min_index][v] < dist[v]) {  // If new path is shorter
+                dist[v] = dist[min_index] + distance[min_index][v];   // Update distance
+                previous[v] = min_index;                              // Update previous city
+            }
+        }
+    }
+
+    // Reconstruct the path from destination to source
+    *path_length = 0;
+    int current = destination;
+    while(current != -1) {
+        path[(*path_length)++] = current;  // Add city to path
+        current = previous[current];  //Move to previous city
+    }
+
+    // Reverse the path to get source to destination order
+    for(int i = 0; i < *path_length / 2; i++) {
+        int temp = path[i];
+        path[i] = path[*path_length - i - 1];
+        path[*path_length - i - 1] = temp;
+    }
+
+    return dist[destination];  // Return the shortest distance
 }
