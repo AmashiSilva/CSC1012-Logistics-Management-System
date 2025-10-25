@@ -8,9 +8,9 @@
 #define MAX_NAME_LENGTH 50
 
 // Global arrays for system data
-char cities[MAX_CITIES][MAX_NAME_LENGTH];
-float distance[MAX_CITIES][MAX_CITIES];
-int city_count = 0;
+char cities[MAX_CITIES][MAX_NAME_LENGTH];  //Array to store city names
+float distance[MAX_CITIES][MAX_CITIES];  //2D array for distance matrix
+int city_count = 0;  //Counter for number of cities
 
 // Vehicle data stored in parallel arrays
 char vehicle_types[3][10] = {"Van", "Truck", "Lorry"};
@@ -45,10 +45,10 @@ int main()
 
         switch(choice) {
             case 1:
-                city_management();
+                city_management();  // Manage cities (add, rename, remove, display)
                 break;
             case 2:
-                distance_management();
+                distance_management();  // Manage distances between cities
                 break;
             case 3:
                 //To be implemented
@@ -76,7 +76,7 @@ void initialize_system() {
     for(int i = 0; i < MAX_CITIES; i++) {
         for(int j = 0; j < MAX_CITIES; j++) {
             if(i == j)
-                distance[i][j] = 0;
+                distance[i][j] = 0;  // Distance from a city to itself is 0
             else
                 distance[i][j] = -1; //No connection
         }
@@ -86,6 +86,7 @@ void initialize_system() {
     printf("System initialized successfully!\n");
 }
 
+// Display the main menu of the logistics management system
 void display_main_menu() {
     printf("\n========================================\n");
     printf("   LOGISTICS MANAGEMENT SYSTEM\n");
@@ -99,7 +100,7 @@ void display_main_menu() {
     printf("========================================\n");
 }
 
-// Input validation function
+// Get valid integer input from user with range checking
 int get_valid_int_input(char* prompt, int min, int max) {
     int value;
     while(1) {
@@ -115,20 +116,23 @@ int get_valid_int_input(char* prompt, int min, int max) {
     }
 }
 
+// Clear the input buffer to prevent input issues
 void clear_input_buffer() {
     int c;
     while((c = getchar()) != '\n' && c != EOF);
 }
 
+// Find the index of a city in the cities array by name
 int find_city_index(char* city_name) {
     for(int i = 0; i < city_count; i++) {
         if(strcmp(cities[i], city_name) == 0) {
-            return i;
+            return i;  // Return index if city found
         }
     }
-    return -1;
+    return -1;  // Return -1 if city not found
 }
 
+// Manage cities: add, rename, remove, or display cities
 void city_management() {
     int choice;
     do {
@@ -162,6 +166,7 @@ void city_management() {
     } while(choice != 0);
 }
 
+// Add a new city to the system
 void add_city() {
     if(city_count >= MAX_CITIES) {
         printf("Maximum number of cities (%d) reached!\n", MAX_CITIES);
@@ -183,6 +188,7 @@ void add_city() {
     printf("City '%s' added successfully!\n", city_name);
 }
 
+// Display all available cities in the system
 void display_cities() {
     printf("\n--- Available Cities ---\n");
     if(city_count == 0) {
@@ -195,6 +201,7 @@ void display_cities() {
     }
 }
 
+// Rename an existing city
 void rename_city() {
     if(city_count == 0) {
         printf("No cities available!\n");
@@ -218,6 +225,7 @@ void rename_city() {
     strcpy(cities[index], new_name);
 }
 
+// Remove a city from the system
 void remove_city() {
     if(city_count == 0) {
         printf("No cities available!\n");
@@ -227,6 +235,7 @@ void remove_city() {
     display_cities();
     int index = get_valid_int_input("Enter city number to remove: ", 1, city_count) - 1;
 
+    // Confirm removal with user
     printf("Are you sure you want to remove '%s'? (1=Yes, 0=No): ", cities[index]);
     int confirm = get_valid_int_input("", 0, 1);
 
@@ -244,6 +253,7 @@ void remove_city() {
     }
 }
 
+// Manage distances between cities
 void distance_management() {
     int choice;
     do {
@@ -256,10 +266,10 @@ void distance_management() {
 
         switch(choice) {
             case 1:
-                input_distance();
+                input_distance();  // Input or edit distance between two cities
                 break;
             case 2:
-                display_distance_table();
+                display_distance_table();  // Display the complete distance table
                 break;
             case 0:
                 break;
@@ -269,7 +279,7 @@ void distance_management() {
     } while(choice != 0);
 }
 
-// Input float validation function
+// Get valid float input from user with range checking
 float get_valid_float_input(char* prompt, float min, float max) {
     float value;
     while(1) {
@@ -285,6 +295,7 @@ float get_valid_float_input(char* prompt, float min, float max) {
     }
 }
 
+// Input or edit distance between two cities
 void input_distance() {
     if(city_count < 2) {
         printf("Need at least 2 cities to input distances!\n");
@@ -302,11 +313,13 @@ void input_distance() {
 
     float dist = get_valid_float_input("Enter distance (km): ", 0.1, 10000.0);
 
+    // Set symmetrical distance (both directions same)
     distance[city1][city2] = dist;
     distance[city2][city1] = dist;  // Symmetrical
     printf("Distance between %s and %s set to %.2f km\n", cities[city1], cities[city2], dist);
 }
 
+// Display the complete distance table between all cities
 void display_distance_table() {
     if(city_count == 0) {
         printf("No cities available!\n");
@@ -327,9 +340,9 @@ void display_distance_table() {
         printf("%-15s", cities[i]);
         for(int j = 0; j < city_count; j++) {
             if(distance[i][j] == -1)
-                printf("%-15s", "N/A");
+                printf("%-15s", "N/A");  // Show N/A for unknown distances
             else
-                printf("%-15.2f", distance[i][j]);
+                printf("%-15.2f", distance[i][j]);  //Show distance value
         }
         printf("\n");
     }
