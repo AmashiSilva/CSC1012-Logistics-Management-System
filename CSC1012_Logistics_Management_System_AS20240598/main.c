@@ -486,4 +486,22 @@ void process_delivery() {
     float profit = base_cost * 0.25;
     float customer_charge = operational_cost + profit;
     float estimated_time = min_distance / vehicle_speeds[vehicle_choice];
+
+    // Store delivery record
+    int current_index = delivery_count;
+    delivery_ids[current_index] = delivery_count + 1;
+    strcpy(delivery_sources[current_index], cities[source]);
+    strcpy(delivery_destinations[current_index], cities[destination]);
+    delivery_weights[current_index] = weight;
+    strcpy(delivery_vehicles[current_index], vehicle_types[vehicle_choice]);
+    delivery_distances[current_index] = min_distance;
+    delivery_base_costs[current_index] = base_cost;
+    delivery_fuel_used[current_index] = fuel_used;
+    delivery_fuel_costs[current_index] = fuel_cost;
+    delivery_operational_costs[current_index] = operational_cost;
+    delivery_profits[current_index] = profit;
+    delivery_customer_charges[current_index] = customer_charge;
+    delivery_estimated_times[current_index] = estimated_time;
+
+    delivery_count++;
 }
