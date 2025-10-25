@@ -460,4 +460,14 @@ void process_delivery() {
         if(i < path_length - 1) printf(" -> ");
     }
     printf(" (%.2f km)\n", min_distance);
+
+    //Vehicle selection
+    printf("\nAvailable Vehicles:\n");
+    printf("1. Van (Capacity: %dkg, Rate: LKR%.2f/km)\n", vehicle_capacities[0], vehicle_rates[0]);
+    printf("2. Truck (Capacity: %dkg, Rate: LKR%.2f/km)\n", vehicle_capacities[1], vehicle_rates[1]);
+    printf("3. Lorry (Capacity: %dkg, Rate: LKR%.2f/km)\n", vehicle_capacities[2], vehicle_rates[2]);
+
+    int vehicle_choice = get_valid_int_input("Select vehicle (1-3): ", 1, 3) - 1;
+    float weight = get_valid_float_input("Enter package weight (kg): ", 0.1, vehicle_capacities[vehicle_choice]);
+
 }
