@@ -14,6 +14,15 @@ char cities[MAX_CITIES][MAX_NAME_LENGTH];  //Array to store city names
 float distance[MAX_CITIES][MAX_CITIES];  //2D array for distance matrix
 int city_count = 0;  //Counter for number of cities
 
+// Global variables for delivery records
+int delivery_ids[MAX_DELIVERIES];
+char delivery_sources[MAX_DELIVERIES][MAX_NAME_LENGTH];
+char delivery_destinations[MAX_DELIVERIES][MAX_NAME_LENGTH];
+float delivery_weights[MAX_DELIVERIES];
+char delivery_vehicles[MAX_DELIVERIES][10];
+float delivery_distances[MAX_DELIVERIES];
+int delivery_count = 0;
+
 // Vehicle data stored in parallel arrays
 char vehicle_types[3][10] = {"Van", "Truck", "Lorry"};
 int vehicle_capacities[3] = {1000, 5000, 10000};
@@ -37,6 +46,7 @@ void distance_management();
 void input_distance();
 void display_distance_table();
 float dijkstra_shortest_path(int source, int destination, int* path, int* path_length);
+//void process_delivery();
 
 int main()
 {
@@ -54,7 +64,7 @@ int main()
                 distance_management();  // Manage distances between cities
                 break;
             case 3:
-                //To be implemented
+                //process_delivery();  // Process a new delivery request
                 break;
             case 4:
                 //To be implemented
@@ -85,8 +95,10 @@ void initialize_system() {
         }
     }
 
-    //...
-    //printf("System initialized successfully!\n");
+    // Initialize delivery IDs to -1 (indicating empty slot)
+    for(int i = 0; i < MAX_DELIVERIES; i++) {
+        delivery_ids[i] = -1;
+    }
 }
 
 // Display the main menu of the logistics management system
